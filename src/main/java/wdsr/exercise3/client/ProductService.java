@@ -90,15 +90,16 @@ public class ProductService extends RestClientBase {
 		WebTarget productTarget = baseTarget.path("products" );
 		
 		Response postResponse = productTarget
-				.request()
-				.post(Entity.json(product));
+				.request(MediaType.APPLICATION_JSON)
+				.post(Entity.json(product), Response.class);
+		
 		if(postResponse.getStatus() != 201)
 		{
 			throw new WebApplicationException();
 		}
 		
-		Product createdProduct = postResponse.readEntity(Product.class);
-		return createdProduct.getId();
+		return postResponse.readEntity(Product.class).getId();
+		//return createdProduct.getId();
 	}
 	
 	/**
@@ -107,7 +108,16 @@ public class ProductService extends RestClientBase {
 	 * @throws NotFoundException if no product found for the given ID.
 	 */
 	public void updateProduct(Product product) {
-		// TODO
+		WebTarget productTarget = baseTarget.path("products/" + String.valueOf(product.getId()));
+		
+		Response postResponse = productTarget
+				.request(MediaType.APPLICATION_JSON)
+				.put(Entity.json(product), Response.class);
+		
+		if(postResponse.getStatus() == Response.Status.NOT_FOUND.getStatusCode())
+		{
+			throw new NotFoundException();
+		}
 	}
 
 	
@@ -117,7 +127,12 @@ public class ProductService extends RestClientBase {
 	 * @throws NotFoundException if no product found for the given ID.
 	 */
 	public void deleteProduct(Product product) {
-		// TODO
+		WebTarget productTarget = baseTarget.path("products/" + String.valueOf(product.getId()) );
+		
+		Product postResponse = productTarget
+		.request(MediaType.APPLICATION_JSON )
+		.delete(Product.class);
+			
 	}
 	
 }

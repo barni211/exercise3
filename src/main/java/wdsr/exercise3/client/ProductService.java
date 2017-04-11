@@ -1,11 +1,25 @@
 package wdsr.exercise3.client;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import javax.ws.rs.GET;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.client.Client;
+import javax.ws.rs.client.Entity;
+import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.client.Invocation.Builder;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+
 
 import wdsr.exercise3.model.Product;
 import wdsr.exercise3.model.ProductType;
@@ -21,8 +35,14 @@ public class ProductService extends RestClientBase {
 	 * @return A list of found products - possibly empty, never null.
 	 */
 	public List<Product> retrieveProducts(Set<ProductType> types) {
-		// TODO
-		return null;
+		WebTarget productTarget = baseTarget.path("products");
+		
+		List<Product> response = productTarget
+		.queryParam("type", types.toArray())
+		.request(MediaType.APPLICATION_JSON )
+		.get(new GenericType<List<Product>>() {});
+				
+		return response;
 	}
 	
 	/**
@@ -30,8 +50,15 @@ public class ProductService extends RestClientBase {
 	 * @return A list of all products - possibly empty, never null.
 	 */
 	public List<Product> retrieveAllProducts() {
-		// TODO
-		return null;
+		//WebTarget baseTarget = client.target("http://localhost:8090/" + String.valueOf(id));
+		WebTarget productTarget = baseTarget.path("products");
+		
+		List<Product> response = productTarget
+		.request(MediaType.APPLICATION_JSON )
+		.get(new GenericType<List<Product>>() {});
+				
+		return response;
+		
 	}
 	
 	/**
@@ -40,9 +67,16 @@ public class ProductService extends RestClientBase {
 	 * @return Product if found
 	 * @throws NotFoundException if no product found for the given ID.
 	 */
+	
 	public Product retrieveProduct(int id) {
-		// TODO
-		return null;
+		//WebTarget baseTarget = client.target("http://localhost:8090/" + String.valueOf(id));
+		WebTarget productTarget = baseTarget.path("products/" + String.valueOf(id) );
+		
+		Product postResponse = productTarget
+				.request(MediaType.APPLICATION_JSON )
+				.get(Product.class);
+		
+		return postResponse;
 	}	
 	
 	/**
@@ -52,8 +86,19 @@ public class ProductService extends RestClientBase {
 	 * @throws WebApplicationException if request to the server failed
 	 */
 	public int storeNewProduct(Product product) {
-		// TODO
-		return 0;
+		//WebTarget baseTarget = client.target("http://localhost:8090/");
+		WebTarget productTarget = baseTarget.path("products" );
+		
+		Response postResponse = productTarget
+				.request()
+				.post(Entity.json(product));
+		if(postResponse.getStatus() != 201)
+		{
+			throw new WebApplicationException();
+		}
+		
+		Product createdProduct = postResponse.readEntity(Product.class);
+		return createdProduct.getId();
 	}
 	
 	/**
@@ -74,4 +119,5 @@ public class ProductService extends RestClientBase {
 	public void deleteProduct(Product product) {
 		// TODO
 	}
+	
 }

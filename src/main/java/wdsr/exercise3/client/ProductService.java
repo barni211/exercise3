@@ -19,7 +19,7 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-
+import org.jboss.resteasy.logging.Logger;
 
 import wdsr.exercise3.model.Product;
 import wdsr.exercise3.model.ProductType;
@@ -28,6 +28,8 @@ public class ProductService extends RestClientBase {
 	protected ProductService(final String serverHost, final int serverPort, final Client client) {
 		super(serverHost, serverPort, client);
 	}
+	
+	Logger logger = Logger.getLogger(ProductService.class);
 	
 	/**
 	 * Looks up all products of given types known to the server.
@@ -93,16 +95,20 @@ public class ProductService extends RestClientBase {
 		WebTarget productTarget = baseTarget.path("products" );
 		
 		Response postResponse = productTarget
-				.request(MediaType.APPLICATION_JSON)
-				.post(Entity.json(product), Response.class);
+				.request()
+				.post(Entity.entity(product, MediaType.APPLICATION_JSON), Response.class);
+				
 		
+		//logger.info(String.valueOf(postResponse.getStatus()));
 		if(postResponse.getStatus() != 201)
 		{
 			throw new WebApplicationException();
 		}
 		
+		logger.info(String.valueOf(postResponse.readEntity(Product.class).getId()));
+	
+		
 		return postResponse.readEntity(Product.class).getId();
-		//return createdProduct.getId();
 	}
 	
 	/**

@@ -11,6 +11,7 @@ import java.util.List;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.WebApplicationException;
 
+import org.jboss.resteasy.logging.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -22,6 +23,8 @@ public class ProductServiceTest extends ClientTestBase {
 	private ServerApplication serverApp;
 	private ProductService productService;
 
+	Logger logger = Logger.getLogger(ProductServiceTest.class);
+	
 	@Before
 	public void setUp() {
 		super.setUp();
@@ -91,10 +94,13 @@ public class ProductServiceTest extends ClientTestBase {
 				new Product(null, "rice", ProductType.FOOD), new Product(null, "wheat", ProductType.FOOD),
 				new Product(null, "gas", ProductType.ENERGY), new Product(null, "oil", ProductType.ENERGY));
 		List<Integer> resourceIds = new ArrayList<>();
-
+			
+		logger.info("wszedlem");
 		// when
 		for (Product p : products) {
 			resourceIds.add(productService.storeNewProduct(p));
+			//logger.info(String.valueOf(resourceIds.get(resourceIds.size()-1)));
+			logger.info("tutaj kurwa, tutaj podaj!");
 		}
 
 		// then

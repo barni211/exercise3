@@ -109,8 +109,8 @@ public class ProductService extends RestClientBase {
 		
 		//logger.info(String.valueOf(postResponse.readEntity(Product.class).getId()));
 		
-		String id = Paths.get(postResponse.getLocation().getPath()).getFileName().toString();
-		return Integer.parseInt(id);
+		int id = Integer.parseInt(Paths.get(postResponse.getLocation().getPath()).getFileName().toString());
+		return id;
 	
 	}
 	

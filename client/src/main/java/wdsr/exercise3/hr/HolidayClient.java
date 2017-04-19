@@ -13,7 +13,7 @@ public class HolidayClient {
 	 * @param wsdlLocation URL of the Human Resource web service WSDL
 	 */
 	public HolidayClient(URL wsdlLocation) {
-		// TODO
+		humanResourceService = new HumanResourceService(wsdlLocation);
 	}
 	
 	/**

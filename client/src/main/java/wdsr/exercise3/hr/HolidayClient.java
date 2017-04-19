@@ -48,20 +48,8 @@ public class HolidayClient {
 		HolidayRequest holidayRequest = new HolidayRequest();
 		
 		HolidayType holidayType = new HolidayType();
-		
-		try {
-			holidayType.setEndDate(getCalendarValue(endDate));
-			holidayType.setStartDate(getCalendarValue(startDate));
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			
-			e.printStackTrace();
-			throw new ProcessingException();
-		} catch (DatatypeConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			throw new ProcessingException();
-		}
+		holidayType.setEndDate(endDate);
+		holidayType.setStartDate(startDate);
 		holidayRequest.setHoliday(holidayType);
 		
 		EmployeeType employeeType = new EmployeeType();
@@ -70,8 +58,6 @@ public class HolidayClient {
 		employeeType.setNumber(employeeId);
 		holidayRequest.setEmployee(employeeType);
 		
-		
-		
 		HumanResource humanResource = humanResourceService.getHumanResourcePort();
 		try {
 			HolidayResponse holidayResponse;
@@ -79,7 +65,7 @@ public class HolidayClient {
 			return holidayResponse.getRequestId();
 		} catch (Exception e) {
 			throw new ProcessingException();
-}
+		}
 		
 	}
 	

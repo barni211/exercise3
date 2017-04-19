@@ -1,5 +1,6 @@
 package wdsr.exercise3.client;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +28,7 @@ import wdsr.exercise3.model.ProductType;
 public class ProductService extends RestClientBase {
 	protected ProductService(final String serverHost, final int serverPort, final Client client) {
 		super(serverHost, serverPort, client);
+		
 	}
 	
 	Logger logger = Logger.getLogger(ProductService.class);
@@ -98,17 +100,18 @@ public class ProductService extends RestClientBase {
 				.request()
 				.post(Entity.entity(product, MediaType.APPLICATION_JSON), Response.class);
 				
-		
+		postResponse.close();
 		//logger.info(String.valueOf(postResponse.getStatus()));
 		if(postResponse.getStatus() != 201)
 		{
 			throw new WebApplicationException();
 		}
 		
-		logger.info(String.valueOf(postResponse.readEntity(Product.class).getId()));
-	
+		//logger.info(String.valueOf(postResponse.readEntity(Product.class).getId()));
 		
-		return postResponse.readEntity(Product.class).getId();
+		String id = Paths.get(postResponse.getLocation().getPath()).getFileName().toString();
+		return Integer.parseInt(id);
+	
 	}
 	
 	/**
